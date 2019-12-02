@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -13,6 +15,8 @@ const dbFile = "./.data/sqlite1.db";
 const exists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(dbFile);
+
+const APP_AUTH_TOKEN 
 
 // if ./.data/sqlite.db does not exist, create it, otherwise print records to console
 db.serialize(() => {
@@ -43,12 +47,16 @@ app.get("/", (request, response) => {
   response.sendFile(`${__dirname}/views/index.html`);
 });
 
+app.get("/admin", (request, response) => {
+  response.sendFile(`${__dirname}/views/admin.html`);
+});
+
 // endpoint to get all the people in the database
-app.get("/getPeople", (request, response) => {
+app.get("/getPeople", (req, res) => {
   db.all("SELECT * from People", (err, rows) => {
     const filteredPeople = []
     rows.forEach(row => { filteredPeople.push({ name: row.name }) })
-    response.send(JSON.stringify(filteredPeople));
+    res.send(JSON.stringify(filteredPeople));
   });
 });
 
@@ -69,6 +77,8 @@ app.post("/addPerson", (request, response) => {
     });
   }
 });
+
+// app.post("/sendSecretSanta")
 
 /*
 // endpoint to clear people from the database
@@ -101,6 +111,12 @@ app.get("/clearPeople", (request, response) => {
 const cleanseString = function(string) {
   return string.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 };
+
+// helper function to authenticate with token
+const authenticate = token => {
+  const tokens = APP_AUTH_TOKEN.split(',')
+  return tokens.includes(token)
+}
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, () => {
