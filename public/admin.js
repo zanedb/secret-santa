@@ -18,7 +18,7 @@ const getPeople = token => {
     .then(response => {
       if (response.status == 200) {
         response.people.forEach(row => {
-          appendNewPerson(row.name, row.phone);
+          appendNewPerson(row);
         });
         unauthorizedView.style.display = "none";
         adminView.style.display = "block";
@@ -29,9 +29,9 @@ const getPeople = token => {
     });
 };
 
-const appendNewPerson = (name, phone) => {
+const appendNewPerson = data => {
   const newListItem = document.createElement("li");
-  newListItem.innerText = `${name}, ${phone}`;
+  newListItem.innerHTML = `${data.name}, ${data.phone}. <a href="javascript:deletePerson(${data.id});">Delete?</a>`;
   peopleList.appendChild(newListItem);
 };
 
@@ -47,6 +47,26 @@ const clearPeople = token => {
     });
   peopleList.innerHTML = "";
 };
+
+const deletePerson = id => {
+  fetch("/deletePerson", {
+    headers: {
+      Authorization: `Bearer ${adminToken}`
+    },
+    data: {
+      id
+    }
+  })
+    .then(res => res.json())
+    .then(response => {
+      console.log(response)
+      if (response.status == 200) {
+        console.log(`deleted id ${id}`);
+      }
+    });
+  peopleList.innerHTML = "";
+  getPeople(adminToken)
+}
 
 if (adminToken !== null) {
   if (adminToken !== '') {

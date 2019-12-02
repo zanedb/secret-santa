@@ -106,9 +106,9 @@ app.use("/*", (req, res, next) => {
   }
 });
 
+
 app.post("/sendSecretSanta", (req, res) => {});
 
-/*
 // endpoint to clear people from the database
 app.get("/clearPeople", (request, response) => {
   // DISALLOW_WRITE is an ENV variable that gets reset for new projects so you can write to the database
@@ -133,7 +133,20 @@ app.get("/clearPeople", (request, response) => {
     );
   }
 });
-*/
+
+app.post("/deletePerson", (req, res) => {
+  if (req.body.id) {
+    db.run(`DELETE FROM People WHERE ID=?`, req.body.id, error => {
+      if (error) {
+        res.status(400).send({ status: 400, message: "error! does id exist?" });
+      } else {
+        res.status(200).send({ status: 200, message: "success" });
+      }
+    });
+  } else {
+    res.status(400).send({ status: 400, message: "requires a user id" })
+  }
+});
 
 // helper function that prevents html/css/script malice
 const cleanseString = function(string) {
