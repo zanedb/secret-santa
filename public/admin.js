@@ -8,7 +8,6 @@ const adminView = document.getElementById("people-admin");
 const unauthorizedView = document.getElementById("unauthorized");
 const clearButton = document.querySelector("#clear-people");
 
-// request the people from our app's sqlite database
 const getPeople = token => {
   fetch("/getPeople", {
     headers: {
@@ -17,22 +16,23 @@ const getPeople = token => {
   })
     .then(res => res.json())
     .then(response => {
-      if (response.status === 200) {
-        response.forEach(row => {
+      if (response.status == 200) {
+        response.people.forEach(row => {
           appendNewPerson(row.name, row.phone);
         });
         unauthorizedView.style.display = "none";
         adminView.style.display = "block";
       } else {
-        if (token === "") {
-          adminView.style.display = "none";
-          unauthorizedView.style.display = "none";
-        } else {
-          adminView.style.display = "none";
-          unauthorizedView.style.display = "block";
-        }
+        adminView.style.display = "none";
+        unauthorizedView.style.display = "block";
       }
     });
+};
+
+const appendNewPerson = (name, phone) => {
+  const newListItem = document.createElement("li");
+  newListItem.innerText = `${name}, ${phone}`;
+  peopleList.appendChild(newListItem);
 };
 
 const clearPeople = token => {
@@ -48,16 +48,11 @@ const clearPeople = token => {
   peopleList.innerHTML = "";
 };
 
-// a helper function that creates a list item for a given person
-const appendNewPerson = (name, phone) => {
-  const newListItem = document.createElement("li");
-  newListItem.innerText = `${name}, ${phone}`;
-  peopleList.appendChild(newListItem);
-};
-
 if (adminToken !== null) {
-  tokenInput.value = adminToken
-  getPeople(adminToken);
+  if (adminToken !== '') {
+    tokenInput.value = adminToken
+    getPeople(adminToken);
+  }
 }
 
 adminForm.onsubmit = event => {
