@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 
 // init sqlite db
-const dbFile = "./.data/sqlite1.db";
+const dbFile = "./.data/sqlite2.db";
 const exists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(dbFile);
@@ -22,13 +22,13 @@ const { APP_AUTH_TOKEN } = process.env;
 db.serialize(() => {
   if (!exists) {
     db.run(
-      "CREATE TABLE People (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, assigned TEXT)"
+      "CREATE TABLE People (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, assigned_name TEXT)"
     );
     console.log("New table People created!");
 
     // insert default person
     db.serialize(() => {
-      db.run('INSERT INTO People (name,phone) VALUES ("Zane","***REMOVED***")');
+      db.run('INSERT INTO People (name,phone) VALUES ("Zane","***REMOVED***","")');
     });
   } else {
     console.log('Database "People" ready to go!');
@@ -78,9 +78,10 @@ app.post("/addPerson", (request, response) => {
     const cleansedName = cleanseString(request.body.name);
     const cleansedPhone = cleanseString(request.body.phone);
     db.run(
-      `INSERT INTO People (name,phone) VALUES (?,?)`,
+      `INSERT INTO People (name,phone,assigned_name) VALUES (?,?,?)`,
       cleansedName,
       cleansedPhone,
+      '',
       error => {
         if (error) {
           response.send({ message: "error!" });
