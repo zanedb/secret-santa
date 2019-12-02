@@ -8,6 +8,7 @@ const peopleList = document.getElementById("people");
 const adminView = document.getElementById("people-admin");
 const unauthorizedView = document.getElementById("unauthorized");
 const clearButton = document.querySelector("#clear-people");
+const sendSecretSantaButton = document.querySelector("#send-secret-santa")
 
 const getPeople = token => {
   fetch("/getPeople", {
@@ -26,6 +27,7 @@ const getPeople = token => {
         } else {
           peopleList.innerHTML = "<p>No people available…</p>";
           clearButton.style.display = "none";
+          sendSecretSantaButton.style.display = "none";
         }
         unauthorizedView.style.display = "none";
         adminView.style.display = "block";
@@ -58,9 +60,8 @@ const clearPeople = (token, count) => {
       })
         .then(res => res.json())
         .then(response => {
-          console.log("cleared people");
+          getPeople(adminToken)
         });
-      peopleList.innerHTML = "";
     }
   } else {
     alert("No people found! Get some friends.");

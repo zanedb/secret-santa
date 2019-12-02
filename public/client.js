@@ -28,6 +28,15 @@ const getPeople = () => {
       } else {
         peopleView.style.display = "none";
       }
+    
+      // don't allow users to resubmit
+      if (submitted == "true" && people.length > 0) {
+        peopleForm.style.display = "none";
+        afterSubmit.style.display = "block";
+      } else {
+        peopleForm.style.display = "block";
+        afterSubmit.style.display = "none";
+      }
     });
 }
   
@@ -38,14 +47,7 @@ const appendNewPerson = name => {
   peopleList.appendChild(newListItem);
 };
 
-// don't allow users to resubmit
-if (submitted == "true") {
-  peopleForm.style.display = "none";
-  afterSubmit.style.display = "block";
-} else {
-  peopleForm.style.display = "block";
-  afterSubmit.style.display = "none";
-}
+getPeople()
 
 // listen for the form to be submitted and add a new person when it is
 peopleForm.onsubmit = event => {
@@ -61,18 +63,11 @@ peopleForm.onsubmit = event => {
   })
     .then(res => res.json())
     .then(response => {
-      console.log(JSON.stringify(response));
+      // reset form
+      nameInput.value = "";
+      phoneInput.value = "";
+
+      localStorage.setItem("submitted", "true");
+      getPeople()
     });
-  getPeople()
-
-  // reset form
-  nameInput.value = "";
-  phoneInput.value = "";
-  nameInput.focus();
-
-  localStorage.setItem("submitted", "true");
-
-  // hide form & show after-submit
-  peopleForm.style.display = "none";
-  afterSubmit.style.display = "block";
 };

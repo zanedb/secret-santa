@@ -49,6 +49,10 @@ p {
   display: none;
 }
 
+#people-section {
+  display: none;
+}
+
 #people-admin {
   display: none;
 }
@@ -78,6 +82,9 @@ button {
   border: 1px solid grey;
   box-shadow: 2px 2px teal;
   cursor: pointer;
+}
+button.red {
+  background-color: lightcoral;
 }
 
 button:hover {
