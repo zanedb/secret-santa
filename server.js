@@ -28,7 +28,9 @@ db.serialize(() => {
 
     // insert default person
     db.serialize(() => {
-      db.run('INSERT INTO People (name,phone) VALUES ("Zane","***REMOVED***","")');
+      db.run(
+        'INSERT INTO People (name,phone) VALUES ("Zane","***REMOVED***","")'
+      );
     });
   } else {
     console.log('Database "People" ready to go!');
@@ -81,7 +83,7 @@ app.post("/addPerson", (request, response) => {
       `INSERT INTO People (name,phone,assigned_name) VALUES (?,?,?)`,
       cleansedName,
       cleansedPhone,
-      '',
+      "",
       error => {
         if (error) {
           response.send({ message: "error!" });
@@ -142,32 +144,43 @@ app.post("/deletePerson", (req, res) => {
       }
     });
   } else {
-    res.status(400).send({ status: 400, message: "requires a user id" })
+    res.status(400).send({ status: 400, message: "requires a user id" });
   }
 });
 
 app.post("/sendSecretSanta", (req, res) => {
   db.all("SELECT * from People", (err, rows) => {
     const names = rows.map(row => row.name);
-    const picks = getPicks(names)
+    const picks = getPicks(names);
     picks.forEach(pick => {
       db.run(
-      `UPDATE People SET assigned_name=? WHERE name=?`, pick.assigned_name, pick.name, error => {
-        if (error) {
-          
+        `UPDATE People SET assigned_name=? WHERE name=?`,
+        pick.assigned_name,
+        pick.name,
+        (err, rows) => {
+          if (rows) {
+            console.log(rows)
+          }
         }
-      })
-    })
+      );
+    });
+    res.sendStatus(200)
+    // TODO: send Twilio text
   });
 });
 
 // https://stackoverflow.com/a/21295633
 const getPicks = names => {
-  return names.slice(0).sort(function(){ return Math.random()-0.5 }).map(function(name, index, arr){
-    const assigned_name = arr[(index+1)%arr.length]
-    return { name, assigned_name };
-  });
-}
+  return names
+    .slice(0)
+    .sort(function() {
+      return Math.random() - 0.5;
+    })
+    .map(function(name, index, arr) {
+      const assigned_name = arr[(index + 1) % arr.length];
+      return { name, assigned_name };
+    });
+};
 
 // helper function that prevents html/css/script malice
 const cleanseString = function(string) {
