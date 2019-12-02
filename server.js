@@ -147,8 +147,19 @@ app.post("/deletePerson", (req, res) => {
 });
 
 app.post("/sendSecretSanta", (req, res) => {
-  
+  db.all("SELECT * from People", (err, rows) => {
+    const allPeople = rows;
+      
+  });
 });
+
+var names = ["Sean","Kyle","Emily","Nick","Cotter","Brian","Jeremy","Kimmy","Pat","Johnny"];
+const getPicks = names => {
+  return names.slice(0).sort(function(){ return Math.random()-0.5 }).map(function(name, index, arr){
+    return name + " gets " + arr[(index+1)%arr.length];
+  });
+}
+getPicks(names);
 
 // helper function that prevents html/css/script malice
 const cleanseString = function(string) {
