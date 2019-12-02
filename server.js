@@ -148,18 +148,22 @@ app.post("/deletePerson", (req, res) => {
 
 app.post("/sendSecretSanta", (req, res) => {
   db.all("SELECT * from People", (err, rows) => {
-    const allPeople = rows;
-      
+    const names = rows.map(row => row.name);
+    const picks = getPicks(names)
+    picks.forEach(pick => {
+      db.run(
+      `UPDATE People SET assigned_name=? WHERE name=?`, 
+    })
   });
 });
 
-var names = ["Sean","Kyle","Emily","Nick","Cotter","Brian","Jeremy","Kimmy","Pat","Johnny"];
+// https://stackoverflow.com/a/21295633
 const getPicks = names => {
   return names.slice(0).sort(function(){ return Math.random()-0.5 }).map(function(name, index, arr){
-    return name + " gets " + arr[(index+1)%arr.length];
+    const assigned_name = arr[(index+1)%arr.length]
+    return { name, assigned_name };
   });
 }
-getPicks(names);
 
 // helper function that prevents html/css/script malice
 const cleanseString = function(string) {
