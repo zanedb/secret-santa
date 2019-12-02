@@ -1,4 +1,5 @@
 let adminToken = localStorage.getItem("adminToken");
+const people = []
 
 // define variables that reference elements on our page
 const adminForm = document.forms[0];
@@ -20,6 +21,7 @@ const getPeople = token => {
         response.people.forEach(row => {
           appendNewPerson(row);
         });
+        people = 
         unauthorizedView.style.display = "none";
         adminView.style.display = "block";
       } else {
@@ -31,46 +33,56 @@ const getPeople = token => {
 
 const appendNewPerson = data => {
   const newListItem = document.createElement("li");
-  newListItem.innerHTML = `${data.name}, ${data.phone}. <a href="javascript:deletePerson(${data.id});">Delete?</a>`;
+  newListItem.innerHTML = `${data.name}, ${data.phone}. <a href="javascript:deletePerson(${data.id}, ${data.name});">Delete?</a>`;
   peopleList.appendChild(newListItem);
 };
 
-const clearPeople = token => {
-  fetch("/clearPeople", {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then(res => res.json())
-    .then(response => {
-      console.log("cleared people");
-    });
-  peopleList.innerHTML = "";
+const clearPeople = (token, count) => {
+  const confirmation = confirm(`Are you sure you want to delete ${count} ${count == 1 ? 'person' : 'people'}?``)
+  if (confirmation) {
+    fetch("/clearPeople", {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(response => {
+        console.log("cleared people");
+      });
+    peopleList.innerHTML = "";
+  }
 };
 
-const deletePerson = id => {
-  fetch("/deletePerson", {
-    headers: {
-      Authorization: `Bearer ${adminToken}`
-    },
-    data: {
-      id
-    }
-  })
-    .then(res => res.json())
-    .then(response => {
-      console.log(response)
-      if (response.status == 200) {
-        console.log(`deleted id ${id}`);
-      }
-    });
-  peopleList.innerHTML = "";
-  getPeople(adminToken)
-}
+const deletePerson = (id, name) => {
+  const confirmation = confirm(`Are you sure you want to delete ${name}?`)
+  if (confirmation) {
+    fetch("/deletePerson", {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id
+      })
+    })
+      .catch(err => console.log)
+      .then(res => res.json())
+      .then(response => {
+        console.log(response);
+        if (response.status == 200) {
+          console.log(`deleted id ${id}`);
+        }
+      });
+    peopleList.innerHTML = "";
+    getPeople(adminToken);
+  }
+};
 
 if (adminToken !== null) {
-  if (adminToken !== '') {
-    tokenInput.value = adminToken
+  if (adminToken !== "") {
+    tokenInput.value = adminToken;
     getPeople(adminToken);
   }
 }
@@ -86,5 +98,5 @@ adminForm.onsubmit = event => {
 };
 
 clearButton.addEventListener("click", event => {
-  clearPeople(adminToken);
+  clearPeople(adminToken, );
 });

@@ -110,7 +110,7 @@ app.use("/*", (req, res, next) => {
 app.post("/sendSecretSanta", (req, res) => {});
 
 // endpoint to clear people from the database
-app.get("/clearPeople", (request, response) => {
+app.post("/clearPeople", (request, response) => {
   // DISALLOW_WRITE is an ENV variable that gets reset for new projects so you can write to the database
   if (!process.env.DISALLOW_WRITE) {
     db.each(
