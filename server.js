@@ -152,7 +152,11 @@ app.post("/sendSecretSanta", (req, res) => {
     const picks = getPicks(names)
     picks.forEach(pick => {
       db.run(
-      `UPDATE People SET assigned_name=? WHERE name=?`, 
+      `UPDATE People SET assigned_name=? WHERE name=?`, pick.assigned_name, pick.name, error => {
+        if (error) {
+          
+        }
+      })
     })
   });
 });
