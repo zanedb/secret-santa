@@ -2,6 +2,7 @@
 // run by the browser each time your view template referencing it is loaded
 
 const people = [];
+const submitted = localStorage.getItem('submitted');
 
 // define variables that reference elements on our page
 const peopleForm = document.forms[0];
@@ -27,7 +28,16 @@ const appendNewPerson = name => {
   peopleList.appendChild(newListItem);
 };
 
-// listen for the form to be submitted and add a new dream when it is
+if (submitted == 'true') {
+  // hide form & show after-submit
+  peopleForm.style.display = "none";
+  afterSubmit.style.display = "block";
+} else {
+  peopleForm.style.display = "block";
+  afterSubmit.style.display = "none";
+}
+
+// listen for the form to be submitted and add a new person when it is
 peopleForm.onsubmit = event => {
   // stop our form submission from refreshing the page
   event.preventDefault();
@@ -52,8 +62,11 @@ peopleForm.onsubmit = event => {
   phoneInput.value = "";
   nameInput.focus();
   
+  localStorage.setItem('submitted','true')
+  
   // hide form & show after-submit
-  style.visibility = "hidden";
+  peopleForm.style.display = "none";
+  afterSubmit.style.display = "block";
 };
 
 clearButton.addEventListener('click', event => {

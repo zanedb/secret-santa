@@ -46,7 +46,9 @@ app.get("/", (request, response) => {
 // endpoint to get all the people in the database
 app.get("/getPeople", (request, response) => {
   db.all("SELECT * from People", (err, rows) => {
-    response.send(JSON.stringify(rows));
+    const filteredPeople = []
+    rows.forEach(row => { filteredPeople.push({ name: row.name }) })
+    response.send(JSON.stringify(filteredPeople));
   });
 });
 
