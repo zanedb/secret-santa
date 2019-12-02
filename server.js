@@ -55,7 +55,7 @@ app.get("/getPeople", (req, res) => {
     if (req.get("Authorization")) {
       // if token is supplied, send full data, otherwise filter
       if (authenticate(req.get("Authorization").split(" ")[1])) {
-        res.send(JSON.stringify(rows));
+        res.send(JSON.stringify({ status: 200, people: rows }));
       } else {
         res.status(401).json({ status: 401, error: "invalid auth token" });
       }
@@ -64,7 +64,7 @@ app.get("/getPeople", (req, res) => {
       rows.forEach(row => {
         filteredPeople.push({ name: row.name });
       });
-      res.send(JSON.stringify(filteredPeople));
+      res.send(JSON.stringify({ status: 200, people: filteredPeople }));
     }
   });
 });

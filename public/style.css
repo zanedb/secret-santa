@@ -41,6 +41,9 @@ p {
 .lightgreen {
   background-color: lightgreen;
 }
+.pink {
+  background-color: pink;
+}
 
 #after-submit {
   display: none;

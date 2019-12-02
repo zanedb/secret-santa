@@ -2,7 +2,7 @@
 // run by the browser each time your view template referencing it is loaded
 
 const people = [];
-const submitted = localStorage.getItem('submitted');
+const submitted = localStorage.getItem("submitted");
 
 // define variables that reference elements on our page
 const peopleForm = document.forms[0];
@@ -10,7 +10,7 @@ const nameInput = peopleForm.elements["name"];
 const phoneInput = peopleForm.elements["phone"];
 const peopleList = document.getElementById("people");
 const afterSubmit = document.getElementById("after-submit");
-const clearButton = document.querySelector('#clear-people');
+const clearButton = document.querySelector("#clear-people");
 
 // const members = ['Dean Dudzik','Jackson Fortin','Xya Ford','Logan Richards','Bree Ewert','Emma Hightower','Annika Brown','Kaci Rose','Zoe Sauvageau', 'Zane Davis-Barrs']
 // const nameOfTheDay = members[Math.floor(Math.random()*members.length)]
@@ -20,7 +20,7 @@ const clearButton = document.querySelector('#clear-people');
 fetch("/getPeople", {})
   .then(res => res.json())
   .then(response => {
-    response.forEach(row => {
+    response.people.forEach(row => {
       appendNewPerson(row.name);
     });
   });
@@ -33,7 +33,7 @@ const appendNewPerson = name => {
 };
 
 // don't allow users to resubmit
-if (submitted == 'true') {
+if (submitted == "true") {
   peopleForm.style.display = "none";
   afterSubmit.style.display = "block";
 } else {
@@ -65,15 +65,15 @@ peopleForm.onsubmit = event => {
   nameInput.value = "";
   phoneInput.value = "";
   nameInput.focus();
-  
-  localStorage.setItem('submitted','true')
-  
+
+  localStorage.setItem("submitted", "true");
+
   // hide form & show after-submit
   peopleForm.style.display = "none";
   afterSubmit.style.display = "block";
 };
 
-clearButton.addEventListener('click', event => {
+clearButton.addEventListener("click", event => {
   fetch("/clearPeople", {})
     .then(res => res.json())
     .then(response => {

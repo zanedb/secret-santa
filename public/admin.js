@@ -17,12 +17,21 @@ const getPeople = token => {
   })
     .then(res => res.json())
     .then(response => {
-      console.log(response)
-      response.forEach(row => {
-        appendNewPerson(row.name, row.phone);
-      });
-      unauthorizedView.style.display = "none";
-      adminView.style.display = "block";
+      if (response.status === 200) {
+        response.forEach(row => {
+          appendNewPerson(row.name, row.phone);
+        });
+        unauthorizedView.style.display = "none";
+        adminView.style.display = "block";
+      } else {
+        if (token === "") {
+          adminView.style.display = "none";
+          unauthorizedView.style.display = "none";
+        } else {
+          adminView.style.display = "none";
+          unauthorizedView.style.display = "block";
+        }
+      }
     });
 };
 
