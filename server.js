@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -16,7 +16,7 @@ const exists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(dbFile);
 
-const APP_AUTH_TOKEN 
+const { APP_AUTH_TOKEN } = process.env;
 
 // if ./.data/sqlite.db does not exist, create it, otherwise print records to console
 db.serialize(() => {
@@ -28,9 +28,7 @@ db.serialize(() => {
 
     // insert default person
     db.serialize(() => {
-      db.run(
-        'INSERT INTO People (name,phone) VALUES ("Zane","***REMOVED***")'
-      );
+      db.run('INSERT INTO People (name,phone) VALUES ("Zane","***REMOVED***")');
     });
   } else {
     console.log('Database "People" ready to go!');
@@ -54,9 +52,20 @@ app.get("/admin", (request, response) => {
 // endpoint to get all the people in the database
 app.get("/getPeople", (req, res) => {
   db.all("SELECT * from People", (err, rows) => {
-    const filteredPeople = []
-    rows.forEach(row => { filteredPeople.push({ name: row.name }) })
-    res.send(JSON.stringify(filteredPeople));
+    if (req.get("Authorization")) {
+      // if token is supplied, send full data, otherwise filter
+      if (authenticate(req.get("Authorization").split(" ")[1])) {
+        res.send(JSON.stringify(rows));
+      } else {
+        res.status(401).json({ status: 401, error: "invalid auth token" });
+      }
+    } else {
+      const filteredPeople = [];
+      rows.forEach(row => {
+        filteredPeople.push({ name: row.name });
+      });
+      res.send(JSON.stringify(filteredPeople));
+    }
   });
 });
 
@@ -68,17 +77,36 @@ app.post("/addPerson", (request, response) => {
   if (!process.env.DISALLOW_WRITE) {
     const cleansedName = cleanseString(request.body.name);
     const cleansedPhone = cleanseString(request.body.phone);
-    db.run(`INSERT INTO People (name,phone) VALUES (?,?)`, cleansedName, cleansedPhone, error => {
-      if (error) {
-        response.send({ message: "error!" });
-      } else {
-        response.send({ message: "success" });
+    db.run(
+      `INSERT INTO People (name,phone) VALUES (?,?)`,
+      cleansedName,
+      cleansedPhone,
+      error => {
+        if (error) {
+          response.send({ message: "error!" });
+        } else {
+          response.send({ message: "success" });
+        }
       }
-    });
+    );
   }
 });
 
-// app.post("/sendSecretSanta")
+app.use("/*", (req, res, next) => {
+  // only allow authenticated users to access API
+  if (req.get("Authorization")) {
+    // for Bearer token authorization, extract the token
+    if (authenticate(req.get("Authorization").split(" ")[1])) {
+      next();
+    } else {
+      res.status(401).json({ status: 401, error: "permission denied" });
+    }
+  } else {
+    res.status(401).json({ status: 401, error: "authorization required" });
+  }
+});
+
+app.post("/sendSecretSanta", (req, res) => {});
 
 /*
 // endpoint to clear people from the database
@@ -114,9 +142,9 @@ const cleanseString = function(string) {
 
 // helper function to authenticate with token
 const authenticate = token => {
-  const tokens = APP_AUTH_TOKEN.split(',')
-  return tokens.includes(token)
-}
+  const tokens = APP_AUTH_TOKEN.split(",");
+  return tokens.includes(token);
+};
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, () => {

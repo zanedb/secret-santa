@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Secret Santa Admin</title>
+    <meta name="description" content="Login to continue." />
+    <!-- <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon"> -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's client-side javascript file -->
+    <script src="/admin.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>
+        Admin
+      </h1>
+    </header>
+
+    <main>
+      <p class="bold">Who goes there?</p>
+      <p>Please enter your <b>✨fancy✨ token</b> to continue…</p>
+
+      <form class="bg lightcoral">
+        <input
+          name="token"
+          aria-label="your token!"
+          type="text"
+          maxlength="100"
+          placeholder="Token!"
+        />
+        <button type="submit" id="submit-token">I’m done!</button>
+      </form>
+
+      <section id="people-admin">
+        <p><b>Welcome, sirrah.</b> Please enjoy this list of comrades.</p>
+        <ul id="people"></ul>
+        <button id="clear-people">
+          Clear people
+        </button>
+      </section>
+    </main>
+
+    <footer>Made by <a href="https://zane.sh">Zane</a>!</footer>
+  </body>
+</html>

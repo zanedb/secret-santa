@@ -46,6 +46,10 @@ p {
   display: none;
 }
 
+#people-admin {
+  display: none;
+}
+
 form {
   display: none;
 }
