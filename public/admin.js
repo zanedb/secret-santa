@@ -83,8 +83,7 @@ const deletePerson = (id, name) => {
       body: JSON.stringify({
         id
       })
-    })
-      .catch(err => console.log)
+    })]
       .then(res => res.json())
       .then(response => {
         console.log(response);
@@ -96,6 +95,31 @@ const deletePerson = (id, name) => {
     getPeople(adminToken);
   }
 };
+
+const sendSecretSanta = () => {
+  if (people.length > 1) {
+    const confirmation = confirm(`Are you sure you want to text all ${people.length} people?`);
+    if (confirmation) {
+      fetch("/sendSecretSanta", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${adminToken}`
+        }
+      })
+        .then(res => res.json())
+        .then(response => {
+          console.log(response);
+          if (response.status == 200) {
+            console.log(`assigned`);
+          }
+        });
+      peopleList.innerHTML = "";
+      getPeople(adminToken);
+    }
+  } else {
+    alert('You need more than one person, silly!')
+  }
+}
 
 if (adminToken !== null) {
   if (adminToken !== "") {
