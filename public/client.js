@@ -1,40 +1,40 @@
 // client-side js
 // run by the browser each time your view template referencing it is loaded
 
-console.log("hello world :o");
-
-const dreams = [];
+const people = [];
 
 // define variables that reference elements on our page
-const dreamsForm = document.forms[0];
-const dreamInput = dreamsForm.elements["dream"];
-const dreamsList = document.getElementById("dreams");
-const clearButton = document.querySelector('#clear-dreams');
+const peopleForm = document.forms[0];
+const nameInput = peopleForm.elements["name"];
+const phoneInput = peopleForm.elements["phone"];
+const peopleList = document.getElementById("people");
+const afterSubmit = document.getElementById("after-submit");
+const clearButton = document.querySelector('#clear-people');
 
-// request the dreams from our app's sqlite database
-fetch("/getDreams", {})
+// request the people from our app's sqlite database
+fetch("/getPeople", {})
   .then(res => res.json())
   .then(response => {
     response.forEach(row => {
-      appendNewDream(row.dream);
+      appendNewPerson(row.name);
     });
   });
 
-// a helper function that creates a list item for a given dream
-const appendNewDream = dream => {
+// a helper function that creates a list item for a given person
+const appendNewPerson = name => {
   const newListItem = document.createElement("li");
-  newListItem.innerText = dream;
-  dreamsList.appendChild(newListItem);
+  newListItem.innerText = name;
+  peopleList.appendChild(newListItem);
 };
 
 // listen for the form to be submitted and add a new dream when it is
-dreamsForm.onsubmit = event => {
+peopleForm.onsubmit = event => {
   // stop our form submission from refreshing the page
   event.preventDefault();
 
-  const data = { dream: dreamInput.value };
+  const data = { name: nameInput.value, phone: phoneInput.value };
 
-  fetch("/addDream", {
+  fetch("/addPerson", {
     method: "POST",
     body: JSON.stringify(data),
     headers: { "Content-Type": "application/json" }
@@ -43,20 +43,24 @@ dreamsForm.onsubmit = event => {
     .then(response => {
       console.log(JSON.stringify(response));
     });
-  // get dream value and add it to the list
-  dreams.push(dreamInput.value);
-  appendNewDream(dreamInput.value);
+  // get person value and add it to the list
+  people.push(data);
+  appendNewPerson(nameInput.value);
 
   // reset form
-  dreamInput.value = "";
-  dreamInput.focus();
+  nameInput.value = "";
+  phoneInput.value = "";
+  nameInput.focus();
+  
+  // hide form & show after-submit
+  style.visibility = "hidden";
 };
 
 clearButton.addEventListener('click', event => {
-  fetch("/clearDreams", {})
+  fetch("/clearPeople", {})
     .then(res => res.json())
     .then(response => {
-      console.log("cleared dreams");
+      console.log("cleared people");
     });
-  dreamsList.innerHTML = "";
+  peopleList.innerHTML = "";
 });

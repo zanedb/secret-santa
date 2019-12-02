@@ -23,14 +23,27 @@ p {
   max-width: 600px;
 }
 
-form {
+.bg {
   margin-bottom: 25px;
   padding: 15px;
-  background-color: cyan;
   display: inline-block;
   width: 100%;
   max-width: 340px;
   border-radius: 3px;
+}
+
+.cyan {
+  background-color: cyan;
+}
+.lightcoral {
+  background-color: lightcoral;
+}
+.lightgreen {
+  background-color: lightgreen;
+}
+
+#after-submit {
+  
 }
 
 input {

@@ -2,52 +2,67 @@
 <html lang="en">
   <head>
     <title>***REMOVED*** Secret Santa</title>
-    <meta name="description" content="The official ***REMOVED*** Secret Santa.">
-    <!—- <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon"> -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The official ***REMOVED*** Secret Santa." />
+    <!-- <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon"> -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="/style.css">
-    
+    <link rel="stylesheet" href="/style.css" />
+
     <!-- import the webpage's client-side javascript file -->
     <script src="/client.js" defer></script>
   </head>
   <body>
     <header>
       <h1>
-        A Dream of the Future
+        ***REMOVED*** Secret Santa
       </h1>
     </header>
 
     <main>
-      <p class="bold">Oh hi,</p>
-      
-      <p>Tell me your hopes and dreams:</p>
-      
-      <form>
-        <input name="dream" aria-label="a new dream" type="text" maxlength="100" placeholder="Dreams!">
-        <button type="submit" id="submit-dream">Submit Dream</button>
+      <p class="bold">Oh hi!</p>
+      <p>
+        Tell me your <b>name</b> and <b>phone number</b>. <br />When the eve is
+        nigh, I shall assign thee a partner.
+      </p>
+
+      <form class="bg lightcoral">
+        <input
+          name="name"
+          aria-label="your name!"
+          type="text"
+          maxlength="100"
+          placeholder="Name!"
+        />
+        <input
+          name="phone"
+          aria-label="your phone number!"
+          type="text"
+          maxlength="100"
+          placeholder="(000) 000-0000"
+        />
+        <button type="submit" id="submit-details">I’m done!</button>
       </form>
-      
-      <section class="dreams">
-        <ul id="dreams"></ul>
-        <button id="clear-dreams">
-          Clear Dreams
+
+      <section class="bg lightgreen" id="after-submit">
+        <p>
+          <b>Thine submission doth please me.</b>
+        </p>
+        <p>
+          <i>Hark! I doth proclaim: <b>thine gifts shant exceed $30</b>. </i>
+        </p>
+      </section>
+
+      <section class="people">
+        <ul id="people"></ul>
+        <button id="clear-people">
+          Clear People
         </button>
       </section>
-      
     </main>
 
-    <footer>
-      Made with <a href="https://glitch.com">Glitch</a>!
-    </footer>
-
-    <!-- include the Glitch button to show what the webpage is about and
-          to make it easier for folks to view source and remix -->
-    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
-    <script src="https://button.glitch.me/button.js"></script>
-
+    <footer>Made by <a href="https://zane.sh">Zane</a>!</footer>
   </body>
 </html>
