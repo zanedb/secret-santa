@@ -9,6 +9,7 @@ const adminView = document.getElementById("people-admin");
 const unauthorizedView = document.getElementById("unauthorized");
 const clearButton = document.querySelector("#clear-people");
 const sendSecretSantaButton = document.querySelector("#send-secret-santa")
+const controlPanelView = document.getElementById("control-panel")
 
 const getPeople = token => {
   fetch("/getPeople", {
@@ -24,10 +25,12 @@ const getPeople = token => {
           people.forEach(row => {
             appendNewPerson(row);
           });
+          clearButton.style.display = "block";
+          controlPanelView.style.display = "block";
         } else {
           peopleList.innerHTML = "<p>No people available…</p>";
           clearButton.style.display = "none";
-          sendSecretSantaButton.style.display = "none";
+          controlPanelView.style.display = "none";
         }
         unauthorizedView.style.display = "none";
         adminView.style.display = "block";
