@@ -5,6 +5,7 @@ const adminForm = document.forms[0];
 const tokenInput = adminForm.elements["token"];
 const peopleList = document.getElementById("people");
 const adminView = document.getElementById("people-admin");
+const unauthorizedView = document.getElementById("unauthorized");
 const clearButton = document.querySelector("#clear-people");
 
 // request the people from our app's sqlite database
@@ -16,9 +17,11 @@ const getPeople = token => {
   })
     .then(res => res.json())
     .then(response => {
+      console.log(response)
       response.forEach(row => {
         appendNewPerson(row.name, row.phone);
       });
+      unauthorizedView.style.display = "none";
       adminView.style.display = "block";
     });
 };

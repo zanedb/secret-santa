@@ -50,6 +50,10 @@ p {
   display: none;
 }
 
+#unauthorized {
+  display: none;
+}
+
 form {
   display: none;
 }
