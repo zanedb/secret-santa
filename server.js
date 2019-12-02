@@ -22,7 +22,7 @@ const { APP_AUTH_TOKEN } = process.env;
 db.serialize(() => {
   if (!exists) {
     db.run(
-      "CREATE TABLE People (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT)"
+      "CREATE TABLE People (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, assigned TEXT)"
     );
     console.log("New table People created!");
 
@@ -106,9 +106,6 @@ app.use("/*", (req, res, next) => {
   }
 });
 
-
-app.post("/sendSecretSanta", (req, res) => {});
-
 // endpoint to clear people from the database
 app.post("/clearPeople", (request, response) => {
   // DISALLOW_WRITE is an ENV variable that gets reset for new projects so you can write to the database
@@ -146,6 +143,10 @@ app.post("/deletePerson", (req, res) => {
   } else {
     res.status(400).send({ status: 400, message: "requires a user id" })
   }
+});
+
+app.post("/sendSecretSanta", (req, res) => {
+  
 });
 
 // helper function that prevents html/css/script malice

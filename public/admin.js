@@ -117,3 +117,7 @@ adminForm.onsubmit = event => {
 clearButton.addEventListener("click", event => {
   clearPeople(adminToken, people.length);
 });
+
+sendSecretSantaButton.addEventListener("click", event => {
+  clearPeople(adminToken, people.length);
+});
