@@ -12,6 +12,10 @@ const peopleList = document.getElementById("people");
 const afterSubmit = document.getElementById("after-submit");
 const clearButton = document.querySelector('#clear-people');
 
+// const members = ['Dean Dudzik','Jackson Fortin','Xya Ford','Logan Richards','Bree Ewert','Emma Hightower','Annika Brown','Kaci Rose','Zoe Sauvageau', 'Zane Davis-Barrs']
+// const nameOfTheDay = members[Math.floor(Math.random()*members.length)]
+// nameInput.placeholder = nameOfTheDay
+
 // request the people from our app's sqlite database
 fetch("/getPeople", {})
   .then(res => res.json())
@@ -28,8 +32,8 @@ const appendNewPerson = name => {
   peopleList.appendChild(newListItem);
 };
 
+// don't allow users to resubmit
 if (submitted == 'true') {
-  // hide form & show after-submit
   peopleForm.style.display = "none";
   afterSubmit.style.display = "block";
 } else {

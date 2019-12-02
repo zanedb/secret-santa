@@ -25,7 +25,7 @@ db.serialize(() => {
     // insert default person
     db.serialize(() => {
       db.run(
-        'INSERT INTO People (name,phone) VALUES ("Zane","123")'
+        'INSERT INTO People (name,phone) VALUES ("Zane","***REMOVED***")'
       );
     });
   } else {
@@ -70,6 +70,7 @@ app.post("/addPerson", (request, response) => {
   }
 });
 
+/*
 // endpoint to clear people from the database
 app.get("/clearPeople", (request, response) => {
   // DISALLOW_WRITE is an ENV variable that gets reset for new projects so you can write to the database
@@ -94,6 +95,7 @@ app.get("/clearPeople", (request, response) => {
     );
   }
 });
+*/
 
 // helper function that prevents html/css/script malice
 const cleanseString = function(string) {
