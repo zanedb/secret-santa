@@ -1,5 +1,5 @@
 let adminToken = localStorage.getItem("adminToken");
-const people = []
+let people = [];
 
 // define variables that reference elements on our page
 const adminForm = document.forms[0];
@@ -18,10 +18,15 @@ const getPeople = token => {
     .then(res => res.json())
     .then(response => {
       if (response.status == 200) {
-        response.people.forEach(row => {
-          appendNewPerson(row);
-        });
-        people = 
+        people = response.people;
+        if (people.length > 0) {
+          people.forEach(row => {
+            appendNewPerson(row);
+          });
+        } else {
+          peopleList.innerHTML = "<p>No people available…</p>";
+          clearButton.style.display = "none";
+        }
         unauthorizedView.style.display = "none";
         adminView.style.display = "block";
       } else {
@@ -33,32 +38,40 @@ const getPeople = token => {
 
 const appendNewPerson = data => {
   const newListItem = document.createElement("li");
-  newListItem.innerHTML = `${data.name}, ${data.phone}. <a href="javascript:deletePerson(${data.id}, ${data.name});">Delete?</a>`;
+  newListItem.innerHTML = `${data.name}, ${data.phone}. <a href="javascript:deletePerson(${data.id}, '${data.name}');">Delete?</a>`;
   peopleList.appendChild(newListItem);
 };
 
 const clearPeople = (token, count) => {
-  const confirmation = confirm(`Are you sure you want to delete ${count} ${count == 1 ? 'person' : 'people'}?``)
-  if (confirmation) {
-    fetch("/clearPeople", {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(res => res.json())
-      .then(response => {
-        console.log("cleared people");
-      });
-    peopleList.innerHTML = "";
+  if (count > 0) {
+    const confirmation = confirm(
+      `Are you sure you want to delete ${count} ${
+        count == 1 ? "person" : "people"
+      }?`
+    );
+    if (confirmation) {
+      fetch("/clearPeople", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(response => {
+          console.log("cleared people");
+        });
+      peopleList.innerHTML = "";
+    }
+  } else {
+    alert("No people found! Get some friends.");
   }
 };
 
 const deletePerson = (id, name) => {
-  const confirmation = confirm(`Are you sure you want to delete ${name}?`)
+  const confirmation = confirm(`Are you sure you want to delete ${name}?`);
   if (confirmation) {
     fetch("/deletePerson", {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${adminToken}`,
         "Content-Type": "application/json"
@@ -98,5 +111,5 @@ adminForm.onsubmit = event => {
 };
 
 clearButton.addEventListener("click", event => {
-  clearPeople(adminToken, );
+  clearPeople(adminToken, people.length);
 });
