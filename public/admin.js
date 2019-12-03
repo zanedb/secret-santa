@@ -8,8 +8,8 @@ const peopleList = document.getElementById("people");
 const adminView = document.getElementById("people-admin");
 const unauthorizedView = document.getElementById("unauthorized");
 const clearButton = document.querySelector("#clear-people");
-const sendSecretSantaButton = document.querySelector("#send-secret-santa")
-const controlPanelView = document.getElementById("control-panel")
+const sendSecretSantaButton = document.querySelector("#send-secret-santa");
+const controlPanelView = document.getElementById("control-panel");
 
 const getPeople = token => {
   fetch("/getPeople", {
@@ -43,7 +43,7 @@ const getPeople = token => {
 
 const appendNewPerson = data => {
   const newListItem = document.createElement("li");
-  newListItem.innerHTML = `${data.name}, ${data.phone}. <a href="javascript:deletePerson(${data.id}, '${data.name}');">Delete?</a>`;
+  newListItem.innerHTML = `${data.name}, ${data.phone}. (${data.assigned_name}) <a href="javascript:deletePerson(${data.id}, '${data.name}');">Delete?</a>`;
   peopleList.appendChild(newListItem);
 };
 
@@ -63,7 +63,7 @@ const clearPeople = (token, count) => {
       })
         .then(res => res.json())
         .then(response => {
-          getPeople(adminToken)
+          getPeople(adminToken);
         });
     }
   } else {
@@ -83,7 +83,7 @@ const deletePerson = (id, name) => {
       body: JSON.stringify({
         id
       })
-    })]
+    })
       .then(res => res.json())
       .then(response => {
         console.log(response);
@@ -98,7 +98,9 @@ const deletePerson = (id, name) => {
 
 const sendSecretSanta = () => {
   if (people.length > 1) {
-    const confirmation = confirm(`Are you sure you want to text all ${people.length} people?`);
+    const confirmation = confirm(
+      `Are you sure you want to text all ${people.length} people?`
+    );
     if (confirmation) {
       fetch("/sendSecretSanta", {
         method: "POST",
@@ -117,9 +119,9 @@ const sendSecretSanta = () => {
       getPeople(adminToken);
     }
   } else {
-    alert('You need more than one person, silly!')
+    alert("You need more than one person, silly!");
   }
-}
+};
 
 if (adminToken !== null) {
   if (adminToken !== "") {
@@ -143,5 +145,5 @@ clearButton.addEventListener("click", event => {
 });
 
 sendSecretSantaButton.addEventListener("click", event => {
-  clearPeople(adminToken, people.length);
+  sendSecretSanta();
 });
