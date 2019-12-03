@@ -12,7 +12,7 @@ body {
 
 h1 {
   font-style: italic;
-  color: deeppink;
+  color: dodgerblue;
 }
 
 .bold {
@@ -96,11 +96,20 @@ button:active {
 }
 
 li {
-  margin-bottom: 5px;
+  list-style: none;
+  padding: 0 0 0.75rem 1rem;
+  margin: 0 0 0.75rem -2.5rem;
+  border-bottom: 1px solid #ccc;
+  max-width: 340px;
+  font-size: 1rem;
+}
+li:last-child {
+  border: none;
 }
 
 footer {
   margin-top: 50px;
   padding-top: 25px;
   border-top: 1px solid lightgrey;
+  font-size: 14px;
 }

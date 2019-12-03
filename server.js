@@ -1,5 +1,16 @@
 require("dotenv").config();
 
+const {
+  APP_AUTH_TOKEN,
+  TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN,
+  TWILIO_MESSAGING_SERVICE_SID
+} = process.env;
+
+const Twilio = require("twilio");
+const validator = require("validator");
+const twilio = Twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -15,8 +26,6 @@ const dbFile = "./.data/sqlite2.db";
 const exists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(dbFile);
-
-const { APP_AUTH_TOKEN } = process.env;
 
 // if ./.data/sqlite.db does not exist, create it, otherwise print records to console
 db.serialize(() => {
@@ -148,7 +157,7 @@ app.post("/deletePerson", (req, res) => {
   }
 });
 
-app.post("/sendSecretSanta", (req, res) => {
+app.post("/assignSecretSanta", (req, res) => {
   db.all("SELECT * from People", (err, rows) => {
     const names = rows.map(row => row.name);
     const picks = getPicks(names);
@@ -159,14 +168,34 @@ app.post("/sendSecretSanta", (req, res) => {
         pick.name,
         (err, rows) => {
           if (rows) {
-            console.log(rows)
+            console.log(rows);
           }
         }
       );
     });
-    res.status(200).send({ status: 200 })
-    // TODO: send Twilio text
+    res.status(200).send({ status: 200 });
   });
+});
+
+app.post("/sendText", (req, res) => {
+  db.all("SELECT * from People", (err, rows) => {
+  Promise.all(
+    rows.map(row => {
+      if (validator.isMobilePhone(row.phone)) {
+        twilio.messages.create({
+          to: row.phone,
+          from: TWILIO_MESSAGING_SERVICE_SID,
+          body: ``
+        });
+      }
+      return;
+    })
+  )
+    .then(() => {})
+    .catch(err => {
+      res.status(500).send({ status: 500, message: err.toString() });
+    });
+  })
 });
 
 // https://stackoverflow.com/a/21295633
