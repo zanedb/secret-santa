@@ -159,8 +159,32 @@ app.post("/deletePerson", (req, res) => {
 
 app.post("/assignSecretSanta", (req, res) => {
   db.all("SELECT * from People", (err, rows) => {
-    const names = rows.map(row => row.name);
+    const filteredRows = rows.filter(
+      row =>
+        !row.name.toLowerCase().includes("xya") &&
+        !row.name.toLowerCase().includes("kate") &&
+        !row.name.toLowerCase().includes("zoe") &&
+        !row.name.toLowerCase().includes("kaci")
+    );
+    const names = filteredRows.map(row => row.name);
     const picks = getPicks(names);
+
+    rows.forEach(row => {
+      [
+        ["xya", "kate"],
+        ["kate", "xya"],
+        ["zoe", "kaci"],
+        ["kaci", "zoe"]
+      ].forEach(per => {
+        if (row.name.toLowerCase().includes(per[0])) {
+          const assigned_name = rows.filter(row =>
+            row.name.toLowerCase().includes(per[1])
+          )[0].name;
+          picks.push({ name: row.name, assigned_name });
+        }
+      });
+    });
+
     picks.forEach(pick => {
       db.run(
         `UPDATE People SET assigned_name=? WHERE name=?`,
@@ -179,23 +203,25 @@ app.post("/assignSecretSanta", (req, res) => {
 
 app.post("/sendText", (req, res) => {
   db.all("SELECT * from People", (err, rows) => {
-  Promise.all(
-    rows.map(row => {
-      if (validator.isMobilePhone(row.phone)) {
-        twilio.messages.create({
-          to: row.phone,
-          from: TWILIO_MESSAGING_SERVICE_SID,
-          body: ``
-        });
-      }
-      return;
-    })
-  )
-    .then(() => {})
-    .catch(err => {
-      res.status(500).send({ status: 500, message: err.toString() });
-    });
-  })
+    Promise.all(
+      rows.map(row => {
+        if (validator.isMobilePhone(row.phone)) {
+          twilio.messages.create({
+            to: row.phone,
+            from: TWILIO_MESSAGING_SERVICE_SID,
+            body: `Good morrow, sirrah! Thou hath been assigned ${row.assigned_name.toUpperCase()} for thine Secret Santa 🎅🎁`
+          });
+        }
+        return;
+      })
+    )
+      .then(() => {
+        res.status(200).send({ status: 200, message: "messages sent!" });
+      })
+      .catch(err => {
+        res.status(500).send({ status: 500, message: err.toString() });
+      });
+  });
 });
 
 // https://stackoverflow.com/a/21295633
