@@ -159,31 +159,8 @@ app.post('/deletePerson', (req, res) => {
 
 app.post('/assignSecretSanta', (req, res) => {
   db.all('SELECT * from People', (err, rows) => {
-    const filteredRows = rows.filter(
-      row =>
-        !row.name.toLowerCase().includes('xya') &&
-        !row.name.toLowerCase().includes('kate') &&
-        !row.name.toLowerCase().includes('zoe') &&
-        !row.name.toLowerCase().includes('kaci')
-    )
-    const names = filteredRows.map(row => row.name)
+    const names = rows.map(row => row.name)
     const picks = getPicks(names)
-
-    rows.forEach(row => {
-      ;[
-        ['xya', 'kate'],
-        ['kate', 'xya'],
-        ['zoe', 'kaci'],
-        ['kaci', 'zoe']
-      ].forEach(per => {
-        if (row.name.toLowerCase().includes(per[0])) {
-          const assigned_name = rows.filter(row =>
-            row.name.toLowerCase().includes(per[1])
-          )[0].name
-          picks.push({ name: row.name, assigned_name })
-        }
-      })
-    })
 
     picks.forEach(pick => {
       db.run(
