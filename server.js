@@ -34,13 +34,6 @@ db.serialize(() => {
       'CREATE TABLE People (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, assigned_name TEXT)'
     )
     console.log('New table People created!')
-
-    // insert default person
-    db.serialize(() => {
-      db.run(
-        'INSERT INTO People (name,phone) VALUES ("Zane","`123-456-7890","")'
-      )
-    })
   } else {
     console.log('Database "People" ready to go!')
     db.each('SELECT * from People', (err, row) => {
