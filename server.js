@@ -38,7 +38,7 @@ db.serialize(() => {
     // insert default person
     db.serialize(() => {
       db.run(
-        'INSERT INTO People (name,phone) VALUES ("Zane","***REMOVED***","")'
+        'INSERT INTO People (name,phone) VALUES ("Zane","`123-456-7890","")'
       )
     })
   } else {
